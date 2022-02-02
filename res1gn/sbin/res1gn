@@ -1,0 +1,55 @@
+#!/bin/sh
+set -e
+
+sealmount=/live/image
+sealkey="$sealmount"/arcade/sealkey
+sealapp="$(ls -1 "$sealmount"/arcade/*.apps)"
+me="$(echo "$sealmount"/live/res1gn*)"
+recovery="$sealmount"/arcade/RECOVERY
+
+
+if [ -f "$recovery" ] || [ -z "$sealapp" ]; then
+    echo "[!] no image found"
+    exit 1
+fi
+if [ $(echo "$sealapp" | wc -l) -gt 1 ]; then
+    echo "[!] multiple images found (${sealapp// /, })"
+    exit 1
+fi
+
+echo "[.] initializing..."
+/etc/init.d/rcS
+/etc/init.d/rc 5
+modprobe usbhid || noinput=true
+sleep 1
+
+tpm_version || { echo "[!] no tpm found"; exit 2; }
+echo "[+] tpm found"
+pass="$(arcadeunsealkey "$sealkey")"
+echo "[!] pass: $pass"
+
+echo "[.] mounting: $sealapp"
+dev="$(losetup -f)"
+echo "$pass-$sealapp" | losetup -e aes -k 256 -p 0 "$dev" "$sealapp"
+
+mount -o remount,rw "$sealmount"
+echo "[.] decrypting: $sealapp"
+app="${sealapp/.apps/.app}"
+dd if="$dev" of="$app" bs=1M
+losetup -d "$dev"
+sync
+
+if file "$app" | grep -qi squash; then
+    echo "[+] decryption successful"
+    if [ -n "$noinput" ] || ! command -v whiptail >&- || whiptail --yesno --clear --title "res1gn" "convert to generic recovery drive?" 8 40; then
+        echo "[.] converting to recovery drive"
+        rm -f "$sealapp"
+        touch "$recovery"
+    fi
+fi
+
+echo "[.] self-destroying"
+find "$me" -type f -exec shred -fu {} +
+find "$me" -type d 2>&- | sort -r | xargs rmdir 2>&- ||:
+sync
+echo "[+] fin!"
