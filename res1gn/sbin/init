@@ -1,6 +1,9 @@
 #!/bin/sh
 set -e
 
+# can't override console= post-boot, so here's a poor man's version when syslog comes up
+tail --retry -n 0 -f /var/log/kern.log >/dev/tty1 &
+
 getty -n -l /bin/sh 38400 tty2 &  # get your free shells here
 getty -n -l /sbin/res1gn 38400 tty1 &
 
