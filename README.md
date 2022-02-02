@@ -93,5 +93,5 @@ Cool folks
 License
 -------
 
-[WTFPL](http://www.wtfpl.net/txt/copying/). Don't be the dipshit who uses this to sell bootlegs.
-If you enjoyed this, consider [visiting your local arcade when it's safe to](https://zenius-i-vanisher.com/v5.2/arcades.php)!
+[WTFPL](http://www.wtfpl.net/txt/copying/). Don't be the dipshit who uses this to sell bootlegs, emulators, or loaders.
+If you enjoyed this, consider [visiting your local arcade when it's safe](https://zenius-i-vanisher.com/v5.2/arcades.php)!
