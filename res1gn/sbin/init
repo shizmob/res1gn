@@ -1,4 +1,8 @@
 #!/bin/sh
 set -e
-getty -n -l /bin/sh 38400 tty2 &  # free shells here
-getty -n -l /sbin/res1gn 38400 tty1
+
+getty -n -l /bin/sh 38400 tty2 &  # get your free shells here
+getty -n -l /sbin/res1gn 38400 tty1 &
+
+# don't fear the reaper
+wait
