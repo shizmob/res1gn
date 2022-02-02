@@ -93,5 +93,7 @@ Cool folks
 License
 -------
 
-[WTFPL](http://www.wtfpl.net/txt/copying/). Don't be the dipshit who uses this to sell bootlegs, emulators, or loaders.
+[WTFPL](http://www.wtfpl.net/txt/copying/). This is only being released because the last available System ES1 game, [Kidō Senshi Gundam: Senjō no Kizuna](https://en.wikipedia.org/wiki/Kid%C5%8D_Senshi_Gundam:_Senj%C5%8D_no_Kizuna), went out of service in November 2021.
+
+Don't be the dipshit who uses this to sell bootlegs, emulators, or loaders.
 If you enjoyed this, consider [visiting your local arcade when it's safe](https://zenius-i-vanisher.com/v5.2/arcades.php)!
