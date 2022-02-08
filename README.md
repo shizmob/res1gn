@@ -1,7 +1,7 @@
 rES1gn
 ======
 
-A dead-simple Namco System ES1 pure software exploit. No hardware required!
+A dead-simple Namco System ES1 (Arcade Linux <= 0.8.4) pure software exploit. No hardware required!
 
 Overview
 --------
@@ -142,6 +142,40 @@ that integrate properly into the system and, when necessary, call out to small n
 It uses asymmetric cryptography to verify updates so you can't hijack into existing games, but it will not prevent you
 from running your own software on it either — *if* you know how to make the packages and trigger recovery mode, that is.
 It's obvious that the engineers at Namco put quite a bit of love into this!
+
+To their additional credit, Namco managed to catch on to this vulnerability themselves, and have fixed it in newer ES1 systems:
+any ES1 system running Arcade Linux >= 0.8.5, released somewhere mid-2011, verifies the `filesystem.squashfs` digest itself
+through a kernel parameter if set, and then hardcodes the image list to a single entry containing that path:
+
+```patch
+--- a/scripts/live	2009-11-28 11:35:50.000000000 +0200
++++ b/scripts/live	2011-04-13 06:41:08.000000000 +0200
+@@ -899,6 +931,12 @@
+ 		roopt="ro"
+ 	fi
+
++        # XXX: Ugly hack.
++        if [ "$FSSUM" ]
++        then
++                image_string="${image_directory}/filesystem.squashfs"
++        else
++
+ 	# Read image names from ${MODULE}.module if it exists
+ 	if [ -e "${image_directory}/filesystem.${MODULE}.module" ]
+ 	then
+@@ -943,6 +981,8 @@
+ 		image_string="$(echo ${image_string} | sed -e 's/ /\n/g' | sort )"
+ 	fi
+
++        fi # $FSSUM
++
+ 	[ -n "${MODULETORAMFILE}" ] && image_string="${image_directory}/$(basename ${MODULETORAMFILE})"
+
+ 	mkdir -p "${croot}"
+```
+
+"Ugly hack" perhaps, but effective it is. Even newer systems running Arcade Linux 0.8.7.1 or 0.8.8.1, released mid-late 2014,
+also have shellshock patched. Kudos for keeping up-to-date!
 
 Namco definitely could've disabled Firewire in the kernel completely, and remove any unused PCI and PCIe ports to partially
 mitigate DMA attacks. But if it weren't for Casper's silly behavioral oversight the System ES1 would be the
