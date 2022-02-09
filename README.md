@@ -114,8 +114,14 @@ without affecting the precious PCR values.
 PoC
 ---
 
-This repository contains a PoC making use of this flaw. Make sure you have `mksquashfs` from squashfs-tools **3.x**,
-run `make res1gn.squashfs MKSQUASHFS=...` and dump `res1gn.squashfs` into `/live` on your System ES1 boot partition.
+This repository contains a PoC making use of this flaw. Use it by attaching your System ES1 hard drive and checking
+the version of `vmlinuz` in `/live`:
+* If < 2.6.29: make sure you have `mksquashfs` from squashfs-tools **3.x**, run
+  `make res1gn.3.squashfs MKSQUASHFS3=/path/to/mksquashfs`, and dump `res1gn.3.squashfs` into `/live`;
+* Else: make sure you have a modern `mksquashfs`, run `make res1gn.4.squashfs` and dump `res1gn.4.squashfs` into `/live`.
+
+If you do not have or do not want to get `mksquashfs`,
+running `make res1gn.dir` and dumping `res1gn.dir` into `/live` also works.
 
 ![Decrypting...](./images/poc-decrypting.png)
 
