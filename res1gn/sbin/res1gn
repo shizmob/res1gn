@@ -3,6 +3,7 @@ set -e
 
 sealmount=/live/image
 sealkey="$sealmount"/arcade/sealkey
+sealpcr=/sys/class/misc/tpm0/device/pcrs
 sealapp="$(ls -1 "$sealmount"/arcade/*.apps)"
 me="$(echo "$sealmount"/live/res1gn*)"
 recovery="$sealmount"/arcade/RECOVERY
@@ -25,7 +26,14 @@ sleep 1
 
 tpm_version || { echo "[!] no tpm found"; exit 2; }
 echo "[+] tpm found"
-pass="$(arcadeunsealkey "$sealkey")"
+if command -v arcadeunsealkey >/dev/null; then
+    pass="$(arcadeunsealkey "$sealkey")"
+elif [ -f "$sealpcr" ]; then
+    pass="$(head -16 "$sealpcr" | sha1sum | cut -f1 -d' ')"
+else
+    echo "[!] no unseal method found, dropping to shell"
+    sh
+fi
 echo "[!] pass: $pass"
 
 echo "[.] mounting: $sealapp"
